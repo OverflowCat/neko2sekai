@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/fs"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -54,11 +55,19 @@ func (h *Handle) Sub(w http.ResponseWriter, r *http.Request) {
 	disableUrlTestb := false
 	addTagb := false
 
+	secret := os.Getenv("SEKAI")
+	predefinedURL := os.Getenv("NEKO")
+
 	if sub == "" {
 		h.l.DebugContext(ctx, "sub 不得为空")
 		http.Error(w, "sub 不得为空", 400)
 		return
 	}
+
+	if sub == secret {
+		sub = predefinedURL
+	}
+
 	if addTag == "true" {
 		addTagb = true
 	}
